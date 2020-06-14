@@ -34,7 +34,7 @@ reset_color() {
 
 ## Preq
 preq() {
-    dependencies=(convert feh colorpicker)
+    dependencies=(convert feh zenity)
     for dependency in "${dependencies[@]}"; do
         type -p "$dependency" &>/dev/null || {
             echo -e $R"ERROR: Could not find $G'${dependency}'$R, is it installed?" >&2
@@ -129,33 +129,39 @@ set_bg() {
 	fi
 }
 
+## Get color with zenity
+zenity_pick() {
+	local color=$(zenity --color-selection | sed -e 's/rgb(//g' -e 's/)//g' -e 's/,/ /g')
+	echo "#$(printf '%02X' $color)"
+}
+
 ## Pick the colors
 color_picker() {
 	if [[ "$SOLID" == "true" ]]; then
 		echo
 		echo -e $Y"Pick a color..."
-		COLOR=$(colorpicker --short --one-shot)
+		COLOR=$(zenity_pick)
 		echo
 		echo -e $Y"Generating wallpaper with color:$G $COLOR"
 	elif [[ "$GRADIENT" == "true" ]] || [[ "$RGRADIENT" == "true" ]] || [[ "$TGRADIENT" == "true" ]]; then
 		echo
 		echo -e $Y"Pick first color..."
-		color1=$(colorpicker --short --one-shot)
+		color1=$(zenity_pick)
 		echo -e $Y"Pick second color..."
-		color2=$(colorpicker --short --one-shot)
+		color2=$(zenity_pick)
 		COLOR="$color1-$color2"
 		echo
 		echo -e $Y"Generating wallpaper with colors:$G $color1, $color2"
 	elif [[ "$BGRADIENT" == "true" ]]; then
 		echo
 		echo -e $Y"Pick first color..."
-		color1=$(colorpicker --short --one-shot)
+		color1=$(zenity_pick)
 		echo -e $Y"Pick second color..."
-		color2=$(colorpicker --short --one-shot)
+		color2=$(zenity_pick)
 		echo -e $Y"Pick third color..."
-		color3=$(colorpicker --short --one-shot)
+		color3=$(zenity_pick)
 		echo -e $Y"Pick fourth color..."
-		color4=$(colorpicker --short --one-shot)
+		color4=$(zenity_pick)
 		echo
 		echo -e $Y"Generating wallpaper with colors:$G $color1, $color2, $color3 & $color4"
 	fi
