@@ -17,8 +17,8 @@ C="\033[0;36m"
 W="\033[1;37m"
 
 ## Variables
-DIR="/datos/Imágenes/Canvas" # Original --> DIR="$HOME/Pictures/Canvas"
-SIZE="1280x800"              # Original --> SIZE="1366x768"
+DIR="$HOME/Pictures/Canvas"
+SIZE="1366x768"
 PSIZE="500x281"
 NAME="Canvas_$(date +%Y-%m-%d_%I-%M-%S).png"
 ANGLE=0
