@@ -14,8 +14,8 @@ REDBG="$(printf '\033[41m')"  GREENBG="$(printf '\033[42m')"  ORANGEBG="$(printf
 MAGENTABG="$(printf '\033[45m')"  CYANBG="$(printf '\033[46m')"  WHITEBG="$(printf '\033[47m')" BLACKBG="$(printf '\033[40m')"
 
 ## Dir, Size, Name, Etc
-DIR="$HOME/Pictures/Canvas"
-size="1366x768"
+DIR="$HOME/Imágenes/Canvas"
+size="1920x1080"
 psize="500x281"
 name="Canvas_$(date +%Y-%m-%d_%I-%M-%S).png"
 
@@ -45,7 +45,7 @@ reset_color() {
 
 ## Prerequisite
 Prerequisite() {
-    dependencies=(convert feh gpick)
+    dependencies=(convert feh zenity)
     for dependency in "${dependencies[@]}"; do
         type -p "$dependency" &>/dev/null || {
             echo -e ${RED}"ERROR: Could not find ${GREEN}'${dependency}'${RED}, is it installed?" >&2
@@ -151,7 +151,7 @@ show_feh() {
 
 ## Pick the colors
 color_picker() {
-	picker_app="gpick -s -o --no-newline"
+	picker_app="zenity --color-selection --show-palette"
 	if [[ "$SOLID" == "true" ]]; then
 		{ echo; echo -n ${ORANGE}"Pick a color... "; }
 		color=$($picker_app)
