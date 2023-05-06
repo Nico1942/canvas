@@ -8,10 +8,23 @@
 ## Canvas - An Imagemagick Script To Generate Wallpapers.
 
 ## ANSI Colors (FG & BG)
-RED="$(printf '\033[31m')"  GREEN="$(printf '\033[32m')"  ORANGE="$(printf '\033[33m')"  BLUE="$(printf '\033[34m')"
-MAGENTA="$(printf '\033[35m')"  CYAN="$(printf '\033[36m')"  WHITE="$(printf '\033[37m')" BLACK="$(printf '\033[30m')"
-REDBG="$(printf '\033[41m')"  GREENBG="$(printf '\033[42m')"  ORANGEBG="$(printf '\033[43m')"  BLUEBG="$(printf '\033[44m')"
-MAGENTABG="$(printf '\033[45m')"  CYANBG="$(printf '\033[46m')"  WHITEBG="$(printf '\033[47m')" BLACKBG="$(printf '\033[40m')"
+RED="$(printf '\033[31m')"
+GREEN="$(printf '\033[32m')"
+ORANGE="$(printf '\033[33m')"
+BLUE="$(printf '\033[34m')"
+MAGENTA="$(printf '\033[35m')"
+CYAN="$(printf '\033[36m')"
+WHITE="$(printf '\033[37m')"
+BLACK="$(printf '\033[30m')"
+
+REDBG="$(printf '\033[41m')"
+GREENBG="$(printf '\033[42m')"
+ORANGEBG="$(printf '\033[43m')"
+BLUEBG="$(printf '\033[44m')"
+MAGENTABG="$(printf '\033[45m')"
+CYANBG="$(printf '\033[46m')"
+WHITEBG="$(printf '\033[47m')"
+BLACKBG="$(printf '\033[40m')"
 
 ## Dir, Size, Name, Etc
 DIR="$HOME/Imágenes/Canvas"
@@ -149,29 +162,37 @@ show_feh() {
 	fi
 }
 
+picker_app() {
+	local color=$(zenity --color-selection --show-palette | sed -e 's/rgb(//; s/)//; s/,/ /g')
+	local c1=$(printf '%02X' $(echo $color | awk '{print $1}'))
+	local c2=$(printf '%02X' $(echo $color | awk '{print $2}'))
+	local c3=$(printf '%02X' $(echo $color | awk '{print $3}'))
+	echo "#${c1}${c2}${c3}"
+}
+
 ## Pick the colors
 color_picker() {
 	picker_app="zenity --color-selection --show-palette"
 	if [[ "$SOLID" == "true" ]]; then
 		{ echo; echo -n ${ORANGE}"Pick a color... "; }
-		color=$($picker_app)
+		color=$(picker_app)
 		{ echo; echo ${ORANGE}"Generating wallpaper with color:${GREEN} $color"; }
 	elif [[ "$GRADIENT" == "true" ]] || [[ "$RGRADIENT" == "true" ]] || [[ "$TGRADIENT" == "true" ]]; then
 		{ echo; echo -n ${ORANGE}"Pick first color... "; }
-		color1=$($picker_app)
+		color1=$(picker_app)
 		{ echo; echo -n ${ORANGE}"Pick second color... "; }
-		color2=$($picker_app)
+		color2=$(picker_app)
 		color="$color1-$color2"
 		{ echo; echo ${ORANGE}"Generating wallpaper with colors:${GREEN} $color1, $color2"; }
 	elif [[ "$BGRADIENT" == "true" ]]; then
 		{ echo; echo -n ${ORANGE}"Pick first color... "; }
-		color1=$($picker_app)
+		color1=$(picker_app)
 		{ echo; echo -n ${ORANGE}"Pick second color... "; }
-		color2=$($picker_app)
+		color2=$(picker_app)
 		{ echo; echo -n ${ORANGE}"Pick third color... "; }
-		color3=$($picker_app)
+		color3=$(picker_app)
 		{ echo; echo -n ${ORANGE}"Pick fourth color... "; }
-		color4=$($picker_app)
+		color4=$(picker_app)
 		{ echo; echo ${ORANGE}"Generating wallpaper with colors:${GREEN} $color1, $color2, $color3 & $color4"; }
 	fi
 }
@@ -283,7 +304,9 @@ solid() {
 	else
 		get_color
 	fi
-	convert -size "$size" canvas:"$color" "$DIR/$name"
+	textColor=$(echo $color | sed -e 's/rgb(//g; s/)//g; s/-/ - /g')
+	text="-pointsize 30 -fill white -annotate +50+1050 $textColor"
+	convert -size "$size" canvas:"$color" $text "$DIR/$name"
 	show_feh
 	set_bg
 }
@@ -300,7 +323,10 @@ linear_gradient() {
 		get_color
 		{ echo; read -p ${ORANGE}"Enter the rotation angle (default is 0): "${BLUE} angle; }
 	fi
-	convert -size "$size" -define gradient:angle="${angle:-0}" gradient:"$color" "$DIR/$name"
+	#textColor=$(echo $color | tr "[:lower:]" "[:upper:]")
+	textColor=$(echo $color | sed -e 's/rgb(//g; s/)//g; s/\-/|/')
+	text="-pointsize 30 -fill white -annotate +50+1050 $textColor"
+	convert -size "$size" -define gradient:angle="${angle:-0}" gradient:"$color" $text "$DIR/$name"
 	show_feh
 	set_bg
 }
@@ -332,7 +358,9 @@ radial_gradient() {
 		fi		
 		{ echo; read -p ${ORANGE}"Enter the rotation angle (default is 0): "${BLUE} angle; }
 	fi
-	convert -size "$size" -define gradient:extent="${shape:-maximum}" -define gradient:angle="${angle:-0}" radial-gradient:"$color" "$DIR/$name"
+	textColor=$(echo $color | tr "[:lower:]" "[:upper:]")
+	text="-pointsize 30 -fill white -annotate +50+1050 $textColor"
+	convert -size "$size" -define gradient:extent="${shape:-maximum}" -define gradient:angle="${angle:-0}" radial-gradient:"$color" $text "$DIR/$name"
 	show_feh
 	set_bg
 }
@@ -351,7 +379,9 @@ twisted_gradient() {
 		get_color
 		{ echo; read -p ${ORANGE}"Enter the twisting amount (maximum 500): "${BLUE} twist; }
 	fi
-	convert -size "$size" gradient:"$color" -swirl "${twist:-150}" "$DIR/$name"
+	textColor=$(echo $color | tr "[:lower:]" "[:upper:]")
+	text="-pointsize 30 -fill white -annotate +50+1050 $textColor"
+	convert -size "$size" gradient:"$color" -swirl "${twist:-150}" $text "$DIR/$name"
 	show_feh
 	set_bg
 }
@@ -498,7 +528,7 @@ randomize() {
 
 
 ## Parse the arguments
-options=$(getopt -o S:,s,l,r,t,b,p,B,h,a,R,n --long size:,solid,linear,radial,twisted,bilinear,plasma,blurred,help,autobg,randomize,no-preview -- "$@")
+options=$(getopt -o S:,s,l,r,t,b,p,B,h,a,R,n,tx --long size:,solid,linear,radial,twisted,bilinear,plasma,blurred,help,autobg,randomize,no-preview,add-text -- "$@")
 eval set -- "$options"
 
 while true; do
@@ -542,6 +572,9 @@ while true; do
 		    usage
 			exit
             ;;
+	-tx|--add-text)
+	    TEXT="true"
+	    ;;
         --)
             shift
             break
