@@ -40,7 +40,7 @@ I only use GNOME so I don't know if zenity will work in another DE|WM.
 + Clone this repository...
 ```bash
 cd $HOME
-git clone https://github.com/adi1090x/canvas.git
+git clone https://github.com/Nico1942/canvas.git
 cd canvas
 chmod +x canvas
 
