@@ -1,9 +1,3 @@
-<!-- Links -->
-[bmac]: https://www.buymeacoffee.com/adi1090x
-[ko-fi]: https://ko-fi.com/adi1090x
-[paypal]: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=U3VK2SSVQWAPN
-[patreon]: https://www.patreon.com/adi1090x
-
 # Canvas
 
 <p align="left">
@@ -18,19 +12,27 @@ A `bash` script to generate and apply different types of **gradient** & **blured
 
 ![main](wallpapers/main.png)
 
+### About this fork
+I changed `gpick` for `zenity` because the first program doesn't work on wayland (at least on my PC).
+
+I added the possibility to put the name of the color in the wallpaper just for fun 😁️.
+
+I only use GNOME so I don't know if zenity will work in another DE|WM.
+
 ### Features
 
-+ Generate a `solid color` wallpaper
++ Generate a `solid color` wallpaperk
 + Generate a `random blured` wallpaper
 + Generate linear, radial, bilinear(4 colored) & twisted `gradient` wallpapers
 + Generate random, twisted or colored `plasma` wallpapers
 + Allows you to pick colors or fetch colors from `.Xresources` file for wallpaper generation
++ Add the name of the color(s) at the bottom right corner (only in solid, linear and radial gradient wallpapers)
 
 ### Dependencies
 
 + `imagemagick`
 + `feh`
-+ `gpick`
++ `zenity`
 + `xrandr` (only if you use it on xfce)
 
 ### Installation
@@ -55,8 +57,9 @@ $ ./canvas -h
 ┗━╸╹ ╹╹ ╹┗┛ ╹ ╹┗━┛
 Canvas V2.0  : The Wallpaper Generator.
 Developed By : Aditya Shakya (@adi1090x)
+This fork By : Nicolás Cualangelo
 
-Usage : canvas [-h] [-S wxh] [-B] [-s] [-l] [-r] [-t] [-b] [-p] [-n] [-a] [-R]
+Usage : canvas [-h] [-S wxh] [-B] [-s] [-l] [-r] [-t] [-b] [-p] [-n] [-a] [-R] [-T]
 
 Options:
    -h   --help		    Show this help message & exit
@@ -66,16 +69,17 @@ Options:
    -l   --linear	    Generate a linear gradient wallpaper
    -r   --radial	    Generate a radial gradient wallpaper
    -t   --twisted	    Generate a twisted gradient wallpaper
-   -b   --bilinear	  Generate a bilinear(4point) gradient wallpaper
+   -b   --bilinear	    Generate a bilinear(4point) gradient wallpaper
    -p   --plasma	    Generate a plasma wallpaper
    -n   --no-preview	Do not show preview when image is generated 
    -a   --autobg	    Automatically set as wallpaper (implies -n)
-   -R   --randomize	  Generate a random wallpaper
+   -R   --randomize	    Generate a random wallpaper
+   -T	 --add-text     Add color name at the bottom right corner
 ```
 
 ### Usage
 
-Though you can pick colors, Here's a [list](https://imagemagick.org/www/script/color.php) of all supported color names.
+Though you can pick colors, Here's a [list](https://imagemagick.org/script/color.php#color_names) of all supported color names.
 
 **1**. Generate random blured wallpaper...
 
@@ -286,6 +290,22 @@ Set as desktop background? (y/n): n
 |Plasma Normal|Plasma Twisted|
 |-|-|
 |![img](wallpapers/13.png)|![img](wallpapers/14.png)|
+
+**8**. Add color name at the bottom right corner
+```
+$ canvas -s -T
+
+Pick Colors or Enter Colors or fetch from .Xresources file? (p/e/x): p
+
+Pick a color... 
+Generating wallpaper with color: #BA68C8
+
+Set as desktop background? (y/n): y
+```
+
+|Solid Named|Lineal Named|
+|-|-|
+|![img](wallpapers/15.png)|![img](wallpapers/16.png)|
 
 ### Common Issues
 

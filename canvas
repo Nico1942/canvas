@@ -4,6 +4,8 @@
 ## Mail    : adi1090x@gmail.com
 ## Github  : @adi1090x
 ## Twitter : @adi1090x
+#
+## Fork    : Nicolás Cualangelo
 
 ## Canvas - An Imagemagick Script To Generate Wallpapers.
 
@@ -78,14 +80,15 @@ usage() {
 		${RED}┏━╸${GREEN}┏━┓${ORANGE}┏┓╻${BLUE}╻ ╻${MAGENTA}┏━┓${CYAN}┏━┓${WHITE}
 		${RED}┃  ${GREEN}┣━┫${ORANGE}┃┗┫${BLUE}┃┏┛${MAGENTA}┣━┫${CYAN}┗━┓${WHITE}
 		${RED}┗━╸${GREEN}╹ ╹${ORANGE}╹ ╹${BLUE}┗┛ ${MAGENTA}╹ ╹${CYAN}┗━┛${WHITE}
-		Canvas V2.0  : The Wallpaper Generator.
+		Canvas V2.2  : The Wallpaper Generator.
 		Developed By : Aditya Shakya (@adi1090x)
+		This fork    : Nicolás Cualangelo (@ncp_)
 			
-		Usage : canvas [-h] [-S wxh] [-B] [-s] [-l] [-r] [-t] [-b] [-p] [-n] [-a] [-R]
+		Usage : canvas [-h] [-S wxh] [-B] [-s] [-l] [-r] [-t] [-b] [-p] [-n] [-a] [-R] [-T]
 
 		Options:
 		   -h   --help		Show this help message & exit
-		   -S   --size		Size of the wallpaper (default is 1366x768)
+		   -S   --size		Size of the wallpaper (default is 1920x1080)
 		   -B   --blurred	Generate a random blurred wallpaper
 		   -s   --solid		Generate a solid color wallpaper
 		   -l   --linear	Generate a linear gradient wallpaper
@@ -96,6 +99,7 @@ usage() {
 		   -n   --no-preview	Do not show preview when image is generated 
 		   -a   --autobg	Automatically set as wallpaper (implies -n)
 		   -R   --randomize	Generate a random wallpaper
+		   -T   --add-text 	Add color name at the bottom right corner
 		   
 	EOF
 }
@@ -163,7 +167,7 @@ show_feh() {
 }
 
 picker_app() {
-	local color=$(zenity --color-selection --show-palette | sed -e 's/rgb(//; s/)//; s/,/ /g')
+	local color=$(zenity --title "Select color" --color-selection --show-palette 2>/dev/null | sed -e 's/rgb(//; s/)//; s/,/ /g')
 	local c1=$(printf '%02X' $(echo $color | awk '{print $1}'))
 	local c2=$(printf '%02X' $(echo $color | awk '{print $2}'))
 	local c3=$(printf '%02X' $(echo $color | awk '{print $3}'))
@@ -172,7 +176,7 @@ picker_app() {
 
 ## Pick the colors
 color_picker() {
-	picker_app="zenity --color-selection --show-palette"
+	#picker_app="zenity --color-selection --show-palette"
 	if [[ "$SOLID" == "true" ]]; then
 		{ echo; echo -n ${ORANGE}"Pick a color... "; }
 		color=$(picker_app)
@@ -296,6 +300,22 @@ get_color() {
 	done
 }
 
+## Add the name of the color(s) en de bottom right corner
+add_text() {
+	local font_size=16
+	local font_color="white"
+	local font_position="+50+1050"
+
+	# Change the - for | because I like it more :P
+	if [[ "$1" =~ ^.*\-.*$ ]]; then
+		local text=$(echo $color | sed 's/-/|/')
+	else
+		local text="$1"
+	fi
+
+	echo "-pointsize $font_size -fill $font_color -annotate $font_position $text"
+}
+
 ## Generate a solid color wallpaper
 solid() {
 	if [[ "$RANDOMIZE" == "true" ]]; then
@@ -304,8 +324,12 @@ solid() {
 	else
 		get_color
 	fi
-	textColor=$(echo $color | sed -e 's/rgb(//g; s/)//g; s/-/ - /g')
-	text="-pointsize 30 -fill white -annotate +50+1050 $textColor"
+	
+	if [[ $TEXT ]]; then
+		local text=$(add_text $color)
+	else
+		local text=""
+	fi
 	convert -size "$size" canvas:"$color" $text "$DIR/$name"
 	show_feh
 	set_bg
@@ -323,9 +347,13 @@ linear_gradient() {
 		get_color
 		{ echo; read -p ${ORANGE}"Enter the rotation angle (default is 0): "${BLUE} angle; }
 	fi
-	#textColor=$(echo $color | tr "[:lower:]" "[:upper:]")
-	textColor=$(echo $color | sed -e 's/rgb(//g; s/)//g; s/\-/|/')
-	text="-pointsize 30 -fill white -annotate +50+1050 $textColor"
+
+	if [[ $TEXT ]]; then
+		local text=$(add_text $color)
+	else
+		local text=""
+	fi
+
 	convert -size "$size" -define gradient:angle="${angle:-0}" gradient:"$color" $text "$DIR/$name"
 	show_feh
 	set_bg
@@ -358,8 +386,13 @@ radial_gradient() {
 		fi		
 		{ echo; read -p ${ORANGE}"Enter the rotation angle (default is 0): "${BLUE} angle; }
 	fi
-	textColor=$(echo $color | tr "[:lower:]" "[:upper:]")
-	text="-pointsize 30 -fill white -annotate +50+1050 $textColor"
+
+	if [[ $TEXT ]]; then
+		local text=$(add_text $color)
+	else
+		local text=""
+	fi
+
 	convert -size "$size" -define gradient:extent="${shape:-maximum}" -define gradient:angle="${angle:-0}" radial-gradient:"$color" $text "$DIR/$name"
 	show_feh
 	set_bg
@@ -379,8 +412,13 @@ twisted_gradient() {
 		get_color
 		{ echo; read -p ${ORANGE}"Enter the twisting amount (maximum 500): "${BLUE} twist; }
 	fi
-	textColor=$(echo $color | tr "[:lower:]" "[:upper:]")
-	text="-pointsize 30 -fill white -annotate +50+1050 $textColor"
+
+	if [[ $TEXT ]]; then
+		local text=$(add_text $color)
+	else
+		local text=""
+	fi
+
 	convert -size "$size" gradient:"$color" -swirl "${twist:-150}" $text "$DIR/$name"
 	show_feh
 	set_bg
@@ -528,7 +566,7 @@ randomize() {
 
 
 ## Parse the arguments
-options=$(getopt -o S:,s,l,r,t,b,p,B,h,a,R,n,tx --long size:,solid,linear,radial,twisted,bilinear,plasma,blurred,help,autobg,randomize,no-preview,add-text -- "$@")
+options=$(getopt -o S:,s,l,r,t,b,p,B,h,a,R,n,T --long size:,solid,linear,radial,twisted,bilinear,plasma,blurred,help,autobg,randomize,no-preview,add-text -- "$@")
 eval set -- "$options"
 
 while true; do
@@ -572,8 +610,8 @@ while true; do
 		    usage
 			exit
             ;;
-	-tx|--add-text)
-	    TEXT="true"
+	-T|--add-text)
+	    TEXT=true
 	    ;;
         --)
             shift
