@@ -272,10 +272,10 @@ get_color() {
 	while true; do
 		{ echo; read -p ${ORANGE}"Pick Colors or Enter Colors or fetch from .Xresources file? (p/e/x): "${BLUE}; }
 		if [[ $REPLY =~ ^[p/P/e/E/x/X]$ ]]; then
-			if [[ $REPLY == "p" ]] || [[ $REPLY == "P" ]]; then
+			if [[ $REPLY =~ ^[pP]$ ]]; then
 				color_picker
 				break
-			elif [[ $REPLY == "x" ]] || [[ $REPLY == "X" ]]; then
+			elif [[ $REPLY =~ ^[xX]$ ]]; then
 				get_xcolors
 				break
 			else
