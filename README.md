@@ -19,11 +19,13 @@ I added the possibility to put the name of the color in the wallpaper just for f
 
 I only use GNOME so I don't know if zenity will work in another DE|WM.
 
+Fix randomize linear gradient, only choose one color, now it get two.
+
 ### Features
 
 + Generate a `solid color` wallpaperk
 + Generate a `random blured` wallpaper
-+ Generate linear, radial, bilinear(4 colored) & twisted `gradient` wallpapers
++ Generate linear, radial, bilinear (4 colored) & twisted `gradient` wallpapers
 + Generate random, twisted or colored `plasma` wallpapers
 + Allows you to pick colors or fetch colors from `.Xresources` file for wallpaper generation
 + Add the name of the color(s) at the bottom right corner (only in solid, linear and radial gradient wallpapers)
@@ -55,26 +57,26 @@ $ ./canvas -h
 ┏━╸┏━┓┏┓╻╻ ╻┏━┓┏━┓
 ┃  ┣━┫┃┗┫┃┏┛┣━┫┗━┓
 ┗━╸╹ ╹╹ ╹┗┛ ╹ ╹┗━┛
-Canvas V2.0  : The Wallpaper Generator.
+Canvas V2.2  : The Wallpaper Generator.
 Developed By : Aditya Shakya (@adi1090x)
 This fork By : Nicolás Cualangelo
 
 Usage : canvas [-h] [-S wxh] [-B] [-s] [-l] [-r] [-t] [-b] [-p] [-n] [-a] [-R] [-T]
 
 Options:
-   -h   --help		    Show this help message & exit
-   -S   --size		    Size of the wallpaper (default is 1366x768)
+   -h   --help          Show this help message & exit
+   -S   --size	        Size of the wallpaper (default is 1366x768)
    -B   --blurred	    Generate a random blurred wallpaper
-   -s   --solid		    Generate a solid color wallpaper
-   -l   --linear	    Generate a linear gradient wallpaper
-   -r   --radial	    Generate a radial gradient wallpaper
-   -t   --twisted	    Generate a twisted gradient wallpaper
-   -b   --bilinear	    Generate a bilinear(4point) gradient wallpaper
-   -p   --plasma	    Generate a plasma wallpaper
-   -n   --no-preview	Do not show preview when image is generated 
-   -a   --autobg	    Automatically set as wallpaper (implies -n)
+   -s   --solid	        Generate a solid color wallpaper
+   -l   --linear        Generate a linear gradient wallpaper
+   -r   --radial        Generate a radial gradient wallpaper
+   -t   --twisted       Generate a twisted gradient wallpaper
+   -b   --bilinear      Generate a bilinear(4point) gradient wallpaper
+   -p   --plasma        Generate a plasma wallpaper
+   -n   --no-preview    Do not show preview when image is generated 
+   -a   --autobg        Automatically set as wallpaper (implies -n)
    -R   --randomize	    Generate a random wallpaper
-   -T	 --add-text     Add color name at the bottom right corner
+   -T   --add-text      Add color name at the bottom right corner
 ```
 
 ### Usage
@@ -301,6 +303,16 @@ Pick a color...
 Generating wallpaper with color: #BA68C8
 
 Set as desktop background? (y/n): y
+
+$ canvas-lT 
+
+Pick Colors or Enter Colors or fetch from .Xresources file? (p/e/x): e
+
+Enter the colors name of hex (format: color1-color2): darkred-teal
+
+Enter the rotation angel (default is 0): 60
+
+Set as desktop background? (y/n): n
 ```
 
 |Solid Named|Lineal Named|
