@@ -304,7 +304,8 @@ get_color() {
 add_text() {
 	local font_size=16
 	local font_color="white"
-	local font_position="+50+1050"
+	local font_position="+20+1070"
+	local font="PF-Tempesta-Five-Condensed"
 
 	# Change the - for | because I like it more :P
 	if [[ "$1" =~ ^.*\-.*$ ]]; then
@@ -313,7 +314,7 @@ add_text() {
 		local text="$1"
 	fi
 
-	echo "-pointsize $font_size -fill $font_color -annotate $font_position $text"
+	echo "-pointsize $font_size -fill $font_color -font $font -annotate $font_position $text"
 }
 
 ## Generate a solid color wallpaper
@@ -339,7 +340,9 @@ solid() {
 linear_gradient() {
 	if [[ "$RANDOMIZE" == "true" ]]; then
 		get_random_color
-		color="$RCOLOR"
+		color1="$RCOLOR"
+		get_random_color
+		color="$color1-$RCOLOR"
 		
 		get_random_number "360"
 		angle="$RNUM"
