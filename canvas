@@ -309,7 +309,7 @@ add_text() {
 
 	# Change the - for | because I like it more :P
 	if [[ "$1" =~ ^.*\-.*$ ]]; then
-		local text=$(echo $color | sed 's/-/|/')
+		local text=$(echo $color | sed 's/-/|/g')
 	else
 		local text="$1"
 	fi
@@ -449,11 +449,18 @@ bilinear_gradient() {
 		get_color
 		{ echo; read -p ${ORANGE}"Smooth or Regular? (s/r): "${BLUE} answer; }
 	fi
+
+	if [[ $TEXT ]]; then
+		local text=$(add_text "$color1|$color2|$color3|$color4")
+	else
+		local text=""
+	fi
+
 	if [[ $answer == "s" ]] || [[ $answer == "S" ]]; then
 		{ echo; echo -n ${CYAN}"Please wait... "; }
-		convert \( xc:"$color1" xc:"$color2" +append \) \( xc:"$color3" xc:"$color4" +append \) -append -size "$size" xc: +swap  -fx 'v.p{i/(w-1),j/(h-1)}' "$DIR/$name"
+		convert \( xc:"$color1" xc:"$color2" +append \) \( xc:"$color3" xc:"$color4" +append \) -append -size "$size" xc: +swap  -fx 'v.p{i/(w-1),j/(h-1)}' $text "$DIR/$name"
 	else
-		convert \( xc:"$color1" xc:"$color2" +append \) \( xc:"$color3" xc:"$color4" +append \) -append -filter triangle -resize "$size"\! "$DIR/$name"
+		convert \( xc:"$color1" xc:"$color2" +append \) \( xc:"$color3" xc:"$color4" +append \) -append -filter triangle -resize "$size"\! $text "$DIR/$name"
 	fi
 	show_feh
 	set_bg
