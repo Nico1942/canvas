@@ -510,8 +510,15 @@ blurred_noise() {
 	else
 		{ echo; read -p ${ORANGE}"Enter the blur strength (maximum 30): "${BLUE} blur; }
 	fi
+
+	if [[ $TEXT ]]; then
+		local text=$(add_text "blurred_noise")
+	else
+		local text=""
+	fi
+
 	convert -size "100x56" xc: +noise Random "/tmp/noise.png"
-	convert "/tmp/noise.png" -virtual-pixel tile -blur 0x"${blur:-14}" -auto-level -resize "$size" "$DIR/$name"	
+	convert "/tmp/noise.png" -virtual-pixel tile -blur 0x"${blur:-14}" -auto-level -resize "$size" $text "$DIR/$name"	
 	show_feh
 	set_bg
 }
