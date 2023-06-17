@@ -304,7 +304,8 @@ get_color() {
 add_text() {
 	local font_size=16
 	local font_color="white"
-	local font_position="+20+1070"
+	local font_position="SouthWest"
+	local font_position_offset="+10+10"
 	local font="PF-Tempesta-Five-Condensed"
 
 	# Change the - for | because I like it more :P
@@ -314,7 +315,7 @@ add_text() {
 		local text="$1"
 	fi
 
-	echo "-pointsize $font_size -fill $font_color -font $font -annotate $font_position $text"
+	echo "-gravity $font_position -pointsize $font_size -fill $font_color -font $font -annotate $font_position_offset $text"
 }
 
 ## Generate a solid color wallpaper
