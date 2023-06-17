@@ -30,6 +30,7 @@ BLACKBG="$(printf '\033[40m')"
 
 ## Dir, Size, Name, Etc
 DIR="$HOME/Imágenes/Canvas"
+PATH_LOGO="$HOME/Proyectos/Colaborativos/canvas/logos/fedora_logo.png"
 size="1920x1080"
 psize="500x281"
 name="Canvas_$(date +%Y-%m-%d_%I-%M-%S).png"
@@ -318,6 +319,12 @@ add_text() {
 	echo "-gravity $font_position -pointsize $font_size -fill $font_color -font $font -annotate $font_position_offset $text"
 }
 
+add_logo() {
+	local logo=$PATH_LOGO
+
+	echo "$logo -gravity SouthEast -geometry +10+10 -composite"
+}
+
 ## Generate a solid color wallpaper
 solid() {
 	if [[ "$RANDOMIZE" == "true" ]]; then
@@ -332,7 +339,14 @@ solid() {
 	else
 		local text=""
 	fi
-	convert -size "$size" canvas:"$color" $text "$DIR/$name"
+	
+	if [[ $LOGO ]]; then
+		local logo=$(add_logo)
+	else
+		local logo=""
+	fi
+
+	convert -size "$size" canvas:"$color" $text $logo "$DIR/$name"
 	show_feh
 	set_bg
 }
@@ -358,7 +372,13 @@ linear_gradient() {
 		local text=""
 	fi
 
-	convert -size "$size" -define gradient:angle="${angle:-0}" gradient:"$color" $text "$DIR/$name"
+	if [[ $LOGO ]]; then
+		local logo=$(add_logo)
+	else
+		local logo=""
+	fi
+
+	convert -size "$size" -define gradient:angle="${angle:-0}" gradient:"$color" $text $logo "$DIR/$name"
 	show_feh
 	set_bg
 }
@@ -397,7 +417,13 @@ radial_gradient() {
 		local text=""
 	fi
 
-	convert -size "$size" -define gradient:extent="${shape:-maximum}" -define gradient:angle="${angle:-0}" radial-gradient:"$color" $text "$DIR/$name"
+	if [[ $LOGO ]]; then
+		local logo=$(add_logo)
+	else
+		local logo=""
+	fi
+
+	convert -size "$size" -define gradient:extent="${shape:-maximum}" -define gradient:angle="${angle:-0}" radial-gradient:"$color" $text $logo "$DIR/$name"
 	show_feh
 	set_bg
 }
@@ -423,7 +449,13 @@ twisted_gradient() {
 		local text=""
 	fi
 
-	convert -size "$size" gradient:"$color" -swirl "${twist:-150}" $text "$DIR/$name"
+	if [[ $LOGO ]]; then
+		local logo=$(add_logo)
+	else
+		local logo=""
+	fi
+
+	convert -size "$size" gradient:"$color" -swirl "${twist:-150}" $text $logo "$DIR/$name"
 	show_feh
 	set_bg
 }
@@ -457,11 +489,17 @@ bilinear_gradient() {
 		local text=""
 	fi
 
+	if [[ $LOGO ]]; then
+		local logo=$(add_logo)
+	else
+		local logo=""
+	fi
+
 	if [[ $answer == "s" ]] || [[ $answer == "S" ]]; then
 		{ echo; echo -n ${CYAN}"Please wait... "; }
-		convert \( xc:"$color1" xc:"$color2" +append \) \( xc:"$color3" xc:"$color4" +append \) -append -size "$size" xc: +swap  -fx 'v.p{i/(w-1),j/(h-1)}' $text "$DIR/$name"
+		convert \( xc:"$color1" xc:"$color2" +append \) \( xc:"$color3" xc:"$color4" +append \) -append -size "$size" xc: +swap  -fx 'v.p{i/(w-1),j/(h-1)}' $text $logo "$DIR/$name"
 	else
-		convert \( xc:"$color1" xc:"$color2" +append \) \( xc:"$color3" xc:"$color4" +append \) -append -filter triangle -resize "$size"\! $text "$DIR/$name"
+		convert \( xc:"$color1" xc:"$color2" +append \) \( xc:"$color3" xc:"$color4" +append \) -append -filter triangle -resize "$size"\! $text $logo "$DIR/$name"
 	fi
 	show_feh
 	set_bg
@@ -518,8 +556,14 @@ blurred_noise() {
 		local text=""
 	fi
 
+	if [[ $LOGO ]]; then
+		local logo=$(add_logo)
+	else
+		local logo=""
+	fi
+
 	convert -size "100x56" xc: +noise Random "/tmp/noise.png"
-	convert "/tmp/noise.png" -virtual-pixel tile -blur 0x"${blur:-14}" -auto-level -resize "$size" $text "$DIR/$name"	
+	convert "/tmp/noise.png" -virtual-pixel tile -blur 0x"${blur:-14}" -auto-level -resize "$size" $text $logo "$DIR/$name"
 	show_feh
 	set_bg
 }
@@ -584,7 +628,7 @@ randomize() {
 
 
 ## Parse the arguments
-options=$(getopt -o S:,s,l,r,t,b,p,B,h,a,R,n,T --long size:,solid,linear,radial,twisted,bilinear,plasma,blurred,help,autobg,randomize,no-preview,add-text -- "$@")
+options=$(getopt -o S:,s,l,r,t,b,p,B,h,a,R,n,T,L --long size:,solid,linear,radial,twisted,bilinear,plasma,blurred,help,autobg,randomize,no-preview,add-text,add-logo -- "$@")
 eval set -- "$options"
 
 while true; do
@@ -630,6 +674,9 @@ while true; do
             ;;
 	-T|--add-text)
 	    TEXT=true
+	    ;;
+	-L|--add-logo)
+	    LOGO=true
 	    ;;
         --)
             shift
