@@ -306,7 +306,9 @@ add_text() {
 	local font_size=16
 	local font_color="white"
 	local font_position="SouthWest"
+	# local font_position="center"
 	local font_position_offset="+10+10"
+	# local font_position_offset="+0+40"
 	local font="PF-Tempesta-Five-Condensed"
 
 	# Change the - for | because I like it more :P
@@ -323,6 +325,7 @@ add_logo() {
 	local logo=$PATH_LOGO
 
 	echo "$logo -gravity SouthEast -geometry +10+10 -composite"
+	# echo "$logo -gravity center -composite"
 }
 
 ## Generate a solid color wallpaper

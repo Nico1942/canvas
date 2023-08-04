@@ -339,3 +339,7 @@ In terminal, *xfconf-query* will print lines starting with `set:`, which show wh
 + In KDE, it changes the wallpaper in all the Activities.
 + If you can improve it, you're welcome.
 + Have Fun!
+
+### Todo
++ Add a config file
++ Add config option
