@@ -9,6 +9,31 @@
 
 ## Canvas - An Imagemagick Script To Generate Wallpapers.
 
+## Config section #############################################################
+## Dir, Size, Name, Etc
+DIR="$HOME/Imágenes/Canvas"
+
+## Logo
+PATH_LOGO="$HOME/Proyectos/Colaborativos/canvas/logos/fedora_logo.png"
+# Logo position
+#  BL = Bottom Left, BM = Bottom Center, BR = Bottom Right, C = Center
+LOGO_POSITION="C"
+
+## Text
+# Text Position
+#  BL = Bottom Left, BM = Bottom Center, BR = Bottom Right, C = Center
+TEXT_POSITION="C"
+
+## Wallpaper size (widthxheight)
+size="1920x1080"
+## Thumbnail size
+psize="500x281"
+## File name
+name="Canvas_$(date +%Y-%m-%d_%I-%M-%S).png"
+
+###############################################################################
+
+
 ## ANSI Colors (FG & BG)
 RED="$(printf '\033[31m')"
 GREEN="$(printf '\033[32m')"
@@ -28,12 +53,6 @@ CYANBG="$(printf '\033[46m')"
 WHITEBG="$(printf '\033[47m')"
 BLACKBG="$(printf '\033[40m')"
 
-## Dir, Size, Name, Etc
-DIR="$HOME/Imágenes/Canvas"
-PATH_LOGO="$HOME/Proyectos/Colaborativos/canvas/logos/fedora_logo.png"
-size="1920x1080"
-psize="500x281"
-name="Canvas_$(date +%Y-%m-%d_%I-%M-%S).png"
 
 ## Wordsplit in ZSH
 set -o shwordsplit 2>/dev/null
@@ -305,11 +324,19 @@ get_color() {
 add_text() {
 	local font_size=16
 	local font_color="white"
-	local font_position="SouthWest"
-	# local font_position="center"
-	local font_position_offset="+10+10"
-	# local font_position_offset="+0+40"
 	local font="PF-Tempesta-Five-Condensed"
+
+	case $TEXT_POSITION in
+	  "BR")
+		  local font_position="SouthWest"
+	    local font_position_offset="+10+10"
+			;;
+	  "C")
+	    local font_position="center"
+	    local font_position_offset="+0+40"
+			;;
+	esac
+
 
 	# Change the - for | because I like it more :P
 	if [[ "$1" =~ ^.*\-.*$ ]]; then
@@ -323,9 +350,14 @@ add_text() {
 
 add_logo() {
 	local logo=$PATH_LOGO
+  local position=$LOGO_POSITION
 
-	echo "$logo -gravity SouthEast -geometry +10+10 -composite"
-	# echo "$logo -gravity center -composite"
+	case $position in
+	  "BR")
+	    echo "$logo -gravity SouthEast -geometry +10+10 -composite";;
+		"C")
+	    echo "$logo -gravity center -composite";;
+	esac
 }
 
 ## Generate a solid color wallpaper
