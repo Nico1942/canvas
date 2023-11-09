@@ -14,7 +14,7 @@
 DIR="$HOME/Imágenes/Canvas"
 
 ## Logo
-PATH_LOGO="$HOME/Proyectos/Colaborativos/canvas/logos/fedora_logo.png"
+PATH_LOGO="$HOME/bin/canvas/logos/fedora_darkbackground.png"
 # Logo position
 #  BL = Bottom Left, BM = Bottom Center, BR = Bottom Right, C = Center
 LOGO_POSITION="C"
@@ -333,7 +333,7 @@ add_text() {
 			;;
 	  "C")
 	    local font_position="center"
-	    local font_position_offset="+0+40"
+	    local font_position_offset="+0+60"
 			;;
 	esac
 
