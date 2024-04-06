@@ -209,10 +209,8 @@ show_feh() {
 
 picker_app() {
 	local color=$(zenity --title "Select color" --color-selection --show-palette 2>/dev/null | sed -e 's/rgb(//; s/)//; s/,/ /g')
-	local c1=$(printf '%02X' $(echo $color | awk '{print $1}'))
-	local c2=$(printf '%02X' $(echo $color | awk '{print $2}'))
-	local c3=$(printf '%02X' $(echo $color | awk '{print $3}'))
-	echo "#${c1}${c2}${c3}"
+	local colorHEX=$(printf '#%02X%02X%02X' $(echo $color))
+	echo "${colorHEX}"
 }
 
 ## Pick the colors
