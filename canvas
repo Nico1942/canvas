@@ -267,115 +267,16 @@ color_picker() {
 	fi
 }
 
-## Show terminal colors
-color_prompt() {
-	f=3 b=4
-	for j in f b; do
-		for i in {0..7}; do
-			printf -v $j$i %b "\e[${!j}${i}m"
-		done
-	done
-	d=$'\e[1m'
-	t=$'\e[0m'
-	v=$'\e[7m'
-
-	cat <<-EOF
-		 
-		 $f1██████  $d██████$t  $f2██████  $d██████$t  $f3██████  $d██████$t
-		 $f1██01██  $d██02██$t  $f2██03██  $d██04██$t  $f3██05██  $d██06██$t
-		 $f1██████  $d██████$t  $f2██████  $d██████$t  $f3██████  $d██████$t
-
-		 $f4██████  $d██████$t  $f5██████  $d██████$t  $f6██████  $d██████$t
-		 $f4██07██  $d██08██$t  $f5██09██  $d██10██$t  $f6██11██  $d██12██$t
-		 $f4██████  $d██████$t  $f5██████  $d██████$t  $f6██████  $d██████$t  
-	EOF
-}
-
-## Fetch colors from .Xresources file
-get_xcolors() {
-	x1="$(xrdb -query | grep 'color1:' | awk '{print $NF}')"
-	x2="$(xrdb -query | grep 'color9:' | awk '{print $NF}')"
-	x3="$(xrdb -query | grep 'color2:' | awk '{print $NF}')"
-	x4="$(xrdb -query | grep 'color10:' | awk '{print $NF}')"
-	x5="$(xrdb -query | grep 'color3:' | awk '{print $NF}')"
-	x6="$(xrdb -query | grep 'color11:' | awk '{print $NF}')"
-	x7="$(xrdb -query | grep 'color4:' | awk '{print $NF}')"
-	x8="$(xrdb -query | grep 'color12:' | awk '{print $NF}')"
-	x9="$(xrdb -query | grep 'color5:' | awk '{print $NF}')"
-	x10="$(xrdb -query | grep 'color13:' | awk '{print $NF}')"
-	x11="$(xrdb -query | grep 'color6:' | awk '{print $NF}')"
-	x12="$(xrdb -query | grep 'color14:' | awk '{print $NF}')"
-	xcolors=("$x1" "$x2" "$x3" "$x4" "$x5" "$x6" "$x7" "$x8" "$x9" "$x10" "$x11" "$x12")
-
-	color_prompt
-
-	if [[ "$SOLID" == "true" ]]; then
-		{
-			echo
-			read -p ${ORANGE}"Enter the color number (without zero): "${BLUE} cnum
-		}
-		color="${xcolors[((cnum - 1))]}"
-		{
-			echo
-			echo ${ORANGE}"Generating wallpaper with color:${GREEN} $color"
-		}
-	elif [[ "$GRADIENT" == "true" ]] || [[ "$RGRADIENT" == "true" ]] || [[ "$TGRADIENT" == "true" ]]; then
-		{
-			echo
-			read -p ${ORANGE}"Enter first color number (without zero): "${BLUE} cnum
-		}
-		color1="${xcolors[((cnum - 1))]}"
-		{
-			echo
-			read -p ${ORANGE}"Enter second color number (without zero): "${BLUE} cnum
-		}
-		color2="${xcolors[((cnum - 1))]}"
-		color="$color1-$color2"
-		{
-			echo
-			echo ${ORANGE}"Generating wallpaper with colors:${GREEN} $color1, $color2"
-		}
-	elif [[ "$BGRADIENT" == "true" ]]; then
-		{
-			echo
-			read -p ${ORANGE}"Enter first color number (without zero): "${BLUE} cnum
-		}
-		color1="${xcolors[((cnum - 1))]}"
-		{
-			echo
-			read -p ${ORANGE}"Enter second color number (without zero): "${BLUE} cnum
-		}
-		color2="${xcolors[((cnum - 1))]}"
-		{
-			echo
-			read -p ${ORANGE}"Enter third color number (without zero): "${BLUE} cnum
-		}
-		color3="${xcolors[((cnum - 1))]}"
-		{
-			echo
-			read -p ${ORANGE}"Enter fourth color number (without zero): "${BLUE} cnum
-		}
-		color4="${xcolors[((cnum - 1))]}"
-		{
-			echo
-			echo ${ORANGE}"Generating wallpaper with colors:${GREEN} $color1, $color2, $color3 & $color4"
-		}
-	fi
-}
-
 ## Get colors
 get_color() {
 	while true; do
 		{
 			echo
-			read -p ${ORANGE}"Pick Colors or Enter Colors or fetch from .Xresources file? (p/e/x): "${BLUE}
+			read -p ${ORANGE}"Pick Colors or Enter Colors? (p/e): "${BLUE}
 		}
-		if [[ $REPLY =~ ^[p/P/e/E/x/X]$ ]]; then
+		if [[ $REPLY =~ ^[p/P/e/E]$ ]]; then
 			if [[ $REPLY =~ ^[pP]$ ]]; then
 				color_picker
-				break
-			elif [[ $REPLY =~ ^[xX]$ ]]; then
-				get_xcolors
 				break
 			else
 				if [[ "$SOLID" == "true" ]]; then
