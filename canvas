@@ -12,17 +12,19 @@
 ## Config section #############################################################
 ## Dir, Size, Name, Etc
 DIR="$(xdg-user-dir PICTURES)/Canvas"
+CONFIG=${HOME}/.config/canvas/profile.conf
 
 ## Logo
 PATH_LOGO="$HOME/bin/canvas/logos/fedora_darkbackground.png"
 # Logo position
 #  BL = Bottom Left, BM = Bottom Center, BR = Bottom Right, C = Center
-LOGO_POSITION="C"
+LOGO_POSITION=$(grep "LOGO_POSITION" $CONFIG | sed 's/.*=//g; s/"//g')
 
 ## Text
 # Text Position
 #  BL = Bottom Left, BM = Bottom Center, BR = Bottom Right, C = Center
-TEXT_POSITION="C"
+TEXT_POSITION=$(grep "TEXT_POSITION" $CONFIG | sed 's/.*=//g; s/"//g')
+
 
 ## Wallpaper size (widthxheight)
 size="1920x1080"
@@ -316,11 +318,19 @@ add_text() {
 	local font="PF-Tempesta-Five-Condensed"
 
 	case $TEXT_POSITION in
-	"BR")
+	"BL")
 		local font_position="SouthWest"
 		local font_position_offset="+10+10"
 		;;
-	"C")
+	"BR")
+		local font_position="SouthEast"
+		local font_position_offset="+10+10"
+		;;
+	"BM")
+		local font_position="South"
+		local font_position_offset="+10+10"
+		;;
+        "C")
 		local font_position="center"
 		local font_position_offset="+0+60"
 		;;
@@ -342,9 +352,15 @@ add_logo() {
 
 	case $position in
 	"BR")
-		echo "$logo -gravity SouthEast -geometry +10+10 -composite"
+		echo "$logo -gravity SouthEast -geometry +10+40 -composite"
 		;;
-	"C")
+	"BM")
+		echo "$logo -gravity South -geometry +0+20 -composite"
+		;;
+	"BL")
+		echo "$logo -gravity SouthWest -geometry +10+40 -composite"
+		;;
+"C")
 		echo "$logo -gravity center -composite"
 		;;
 	esac
