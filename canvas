@@ -18,12 +18,12 @@ CONFIG=${HOME}/.config/canvas/profile.conf
 PATH_LOGO="$HOME/bin/canvas/logos/fedora_darkbackground.png"
 # Logo position
 #  BL = Bottom Left, BM = Bottom Center, BR = Bottom Right, C = Center
-LOGO_POSITION=$(grep "LOGO_POSITION" $CONFIG | sed 's/.*=//g; s/"//g')
+LOGO_POSITION=$(awk -F "=" '/LOGO_POSITION/ {gsub(/"/, "", $2); print $2 }' $CONFIG)
 
 ## Text
 # Text Position
 #  BL = Bottom Left, BM = Bottom Center, BR = Bottom Right, C = Center
-TEXT_POSITION=$(grep "TEXT_POSITION" $CONFIG | sed 's/.*=//g; s/"//g')
+TEXT_POSITION=$(awk -F "=" '/TEXT_POSITION/ {gsub(/"/, "", $2); print $2 }' $CONFIG)
 
 
 ## Wallpaper size (widthxheight)
@@ -90,8 +90,8 @@ Prerequisite() {
 		}
 	done
 
-	if [[ ! -d "$DIR" ]]; then
-		mkdir -p "$DIR"
+	if [[ ! -d "$DIR"  ]]; then
+		mkdir -p $DIR
 	fi
 }
 
@@ -313,9 +313,11 @@ get_color() {
 
 ## Add the name of the color(s) en de bottom right corner
 add_text() {
+	local text="$1"
 	local font_size=16
 	local font_color="white"
 	local font="PF-Tempesta-Five-Condensed"
+	local font_position font_position_offset
 
 	case $TEXT_POSITION in
 	"BL")
